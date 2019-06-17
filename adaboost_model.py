@@ -42,7 +42,6 @@ for i , (train_idx, val_idx) in enumerate(kf.split(X,y)) :
     impute = SimpleImputer(-1, strategy = 'median')
     X_train[:,impute_slice] = impute.fit_transform(X_train[:,impute_slice])
     X_val[:,impute_slice] = impute.transform(X_val[:,impute_slice])
-    #model = AdaBoostClassifier(ExtraTreesClassifier(20,n_jobs = -1) , n_estimators = 50)
     model = AdaBoostClassifier(ExtraTreesClassifier(10, n_jobs = -1) , n_estimators = 400)
     model.fit(X_train , y_train)
     
