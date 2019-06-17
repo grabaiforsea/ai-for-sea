@@ -38,8 +38,6 @@ n_features = X.shape[1]
 impute_slice = slice(speed_idx,speed_idx+1)
 
 for i , (train_idx, val_idx) in enumerate(kf.split(X,y)) :
-    if i > 1 :
-        continue
     X_train, X_val , y_train , y_val = X[train_idx] , X[val_idx] , y[train_idx] , y[val_idx]
     impute = SimpleImputer(-1, strategy = 'median')
     X_train[:,impute_slice] = impute.fit_transform(X_train[:,impute_slice])
