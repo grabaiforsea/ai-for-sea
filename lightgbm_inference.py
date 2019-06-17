@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import gc
 
 import lightgbm as lgb
 from multiprocessing import Pool
@@ -45,7 +46,7 @@ y = train_data['labels'].values
 #X_test = test_data.values
 
 meta_train = pd.DataFrame(np.zeros(len(X)) , columns=['preds'])
-#meta_test = np.zeros(len(X_test))
+#meta_test = pd.DataFrame(np.zeros(len(test_data)) , columns=['preds'])
 
 kf = StratifiedKFold(N_SPLITS, random_state=42)
 
@@ -55,7 +56,7 @@ gc.collect()
 
 def run_inference_train(i) :
     bst = lgb.Booster(model_file = '../input/lgbm-fold-{}-part-1/model_{}.txt'.format(i+1,i))
-    return bst.predict(X[idxs[i]]) , bst.predict(X_test)
+    return bst.predict(X[idxs[i]]) #, bst.predict(X_test)
 
 idxs = [val_idx for train_idx, val_idx in kf.split(X,y)]
 
@@ -64,7 +65,7 @@ with Pool(os.cpu_count()) as p :
 
 for i , val_idx in enumerate(idxs) :
     meta_train.iloc[val_idx,0] = preds_list[i][0]
-    meta_test += preds_list[i][1]
+    #meta_test += preds_list[i][1]
 
-np.save('meta_test', meta_test)
+#np.save('meta_test', meta_test)
 meta_train.to_csv('meta_train.csv')
